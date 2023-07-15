@@ -22,18 +22,16 @@ def Count(i, j):
             if((x+y) % 2 == 0):
                 if(chessBoard[x][y] != 'W'):
                     a+=1
+                    
+                if(chessBoard[x][y] != 'B'):
+                    b+=1
             else:
                 if(chessBoard[x][y] != 'B'):
                     a+=1
-                    
-    for x in range(i, i+8):
-        for y in range(j, j+8):
-            if((x+y) % 2 == 1):
+                
                 if(chessBoard[x][y] != 'W'):
                     b+=1
-            else:
-                if(chessBoard[x][y] != 'B'):
-                    b+=1
+                
     return min(a,b)
 
 minCnt = 64
