@@ -1,5 +1,4 @@
-import sys, math
-from collections import deque
+import sys
 from bisect import bisect_left, bisect_right
 
 input=sys.stdin.readline
@@ -7,6 +6,7 @@ input=sys.stdin.readline
 size = 2*123456
 sieve = [False]*2 + [True]*(size-1)
 primes=[]
+
 for i in range(2, int((size)**(0.5))+1):
     if sieve[i]:
         for j in range(i+i, size+1, i):
