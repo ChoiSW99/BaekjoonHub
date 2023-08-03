@@ -15,9 +15,11 @@ for _ in range(E):
     Graph[b].append((a, c))
 
 v1, v2 = map(int, input().split())
+distTo1 = [float('inf') for _ in range(N+1)]
+distTo2 = [float('inf') for _ in range(N+1)]
+distTo3 = [float('inf') for _ in range(N+1)]
 
-def Dijkstra(start, desti):
-    distTo = [float('inf') for _ in range(N+1)]
+def Dijkstra(start, distTo):
     distTo[start] = 0
     que = []
     heapq.heappush(que, (0, start))
@@ -30,12 +32,13 @@ def Dijkstra(start, desti):
             if d < distTo[nextNode]:
                 distTo[nextNode] = d
                 heapq.heappush(que, (d, nextNode))
-    
-    return distTo[desti]
 
-d1 = Dijkstra(1, v1) + Dijkstra(v1, v2) + Dijkstra(v2, N)
-d2 = Dijkstra(1, v2) + Dijkstra(v2, v1) + Dijkstra(v1, N)
-mini = min(d1, d2)
+
+Dijkstra(1, distTo1)
+Dijkstra(v1, distTo2)
+Dijkstra(N, distTo3)
+
+mini = min(distTo1[v1] + distTo2[v2] + distTo3[v2], distTo1[v2] + distTo2[v2] + distTo3[v1])
 if mini == float('inf'):
     print(-1)
 else:
