@@ -14,6 +14,12 @@ def Dijkstra():
     while que:
         lsum, i, j = heapq.heappop(que)
         
+        if lsum > loseSum[i][j]:
+            continue
+        
+        if i == j == N-1:
+            return loseSum[N-1][N-1]
+        
         for idx in range(4):
             if 0 <= i+dx[idx] <= N-1 and 0<= j+dy[idx] <= N-1:
                 newLose = lsum + lose[i+dx[idx]][j+dy[idx]] 
@@ -21,7 +27,7 @@ def Dijkstra():
                     loseSum[i+dx[idx]][j+dy[idx]] = newLose
                     heapq.heappush(que, (newLose, i+dx[idx], j+dy[idx]))
                     
-    return loseSum[N-1][N-1]
+    
 
 while True:
     N = int(input())
@@ -30,5 +36,5 @@ while True:
     
     result = Dijkstra()
     
-    print('Problem ' + str(Tc) + ': ' + str(result))
+    print(f'Problem {Tc}: {result}')
     Tc += 1
