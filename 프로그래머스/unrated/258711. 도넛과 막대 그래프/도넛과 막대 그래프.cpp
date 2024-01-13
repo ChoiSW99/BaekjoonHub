@@ -11,9 +11,7 @@
 
 using namespace std;
 
-typedef pair<int, int> pii;
-
-bool visited[MAX] = { false, };
+bool visited[MAX] = { false, }; // 사용한 정점들
 
 vector<int> solution(vector<vector<int>> edges) {
     vector<int> answer;
@@ -62,14 +60,14 @@ vector<int> solution(vector<vector<int>> edges) {
     // 막대 도형 or 8자 도형 찾기
     for (int idx = 1; idx < MAX; idx++)
     {
-        if (idx == createdVertex)
+        if (idx == createdVertex) // 생성한 정점 제외
             continue;
 
         if (!visited[idx])
             continue;
 
         // 막대도형
-        if (indegree[idx] == 0 && outdegree[idx] <= 1)
+        if (indegree[idx] == 0)
         {
             stick++;
             continue;
