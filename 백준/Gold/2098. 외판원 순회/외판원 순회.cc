@@ -37,7 +37,7 @@ int DFS_TSP(int cur, int visited)
 		if (dist[cur][i] == 0)
 			continue;
 
-		if ( i == cur) // i == start ||
+		if (i == start || i == cur) // 
 			continue;
 
 		// 방문해야할 곳이 아닐 때
