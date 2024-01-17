@@ -37,7 +37,10 @@ int DFS_TSP(int cur, int visited)
 		if (dist[cur][i] == 0)
 			continue;
 
-		// 이미 방문한 지점
+		if ( i == cur) // i == start ||
+			continue;
+
+		// 방문해야할 곳이 아닐 때
 		if ((visited & (1 << i)) == 0)
 			continue;
 
@@ -49,8 +52,6 @@ int DFS_TSP(int cur, int visited)
 
 int main()
 {
-	//freopen("input.txt", "r", stdin);
-
 	ios::sync_with_stdio(false);
 	cin.tie(NULL);
 
@@ -70,6 +71,5 @@ int main()
 		}
 	}
 
-	DFS_TSP(start, (1 << N) - 1); // 0번시작, 1111 
-	cout << dp[start][(1 << N) - 1];
+	cout << DFS_TSP(start, (1 << N) - 1); // 0번시작, 1111 
 }
