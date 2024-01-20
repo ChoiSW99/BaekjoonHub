@@ -32,26 +32,26 @@ int main()
 			for (int j = 0; j < size; j++)
 				cin >> cave[i][j];
 
-		queue<pair<int,int>> que;
-		que.emplace(0,0);
+		priority_queue<pair<int,pair<int,int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> que;
+		que.push({ cave[0][0], {0, 0} });
 		cost[0][0] = cave[0][0];
 
 		while (!que.empty())
 		{
-			pair<int, int> cur = que.front();
+			auto cur = que.top();
 			que.pop();
 
 			for (int idx = 0; idx < 4; idx++)
 			{
-				int nextRow = cur.first + dr[idx];
-				int nextCol = cur.second + dc[idx];
+				int nextRow = cur.second.first + dr[idx];
+				int nextCol = cur.second.second + dc[idx];
 
 				if (0 <= nextRow && nextRow < size && 0 <= nextCol && nextCol < size)
 				{
-					if (cost[cur.first][cur.second] + cave[nextRow][nextCol] < cost[nextRow][nextCol])
+					if (cost[cur.second.first][cur.second.second] + cave[nextRow][nextCol] < cost[nextRow][nextCol])
 					{
-						cost[nextRow][nextCol] = cost[cur.first][cur.second] + cave[nextRow][nextCol];
-						que.emplace(nextRow, nextCol);
+						cost[nextRow][nextCol] = cost[cur.second.first][cur.second.second] + cave[nextRow][nextCol];
+						que.push({ cost[nextRow][nextCol], { nextRow, nextCol } });
 					}
 				}
 			}
