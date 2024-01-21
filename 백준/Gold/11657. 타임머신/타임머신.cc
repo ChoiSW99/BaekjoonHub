@@ -15,60 +15,62 @@ int main()
 	int a, b, c;
 	cin >> n >> m;
 
-	vector<vector<pii>> graph(n+1);
-	vector<long long> dist(n + 1, INF);
+	vector<vector<pii>> graph(n + 1);
+	vector<int> visited(n+1, 0); // 노드 방문 횟수
+	vector<bool> isInQueue(n + 1, 0);
+
+	vector<long long> dist(n + 1, INF); 
 
 	for (int i = 0; i < m; i++)
 	{
 		cin >> a >> b >> c;
-		graph[a].push_back({b,c});
+		graph[a].push_back({b,c}); // a도시 ==(c시간)==> b도시
 	}
 
+	queue<int> que;
+	que.push(1);
+	isInQueue[1] = true;
 	dist[1] = 0;
-	// n-1번 반복
-	for (int r = 0; r < n - 1; r++)
-	{
-		for (int st = 1; st < n + 1; st++)
-		{
-			for (pii n : graph[st]) // 출발st, 도착n.first, 걸리는시간n.second
-			{
-				// 방문 안한 도시
-				// 걸리는시간n.second가 음수면 갱신되기 때문에 continue로 넘겨줘야함.
-				// if(INF - 1 < INF) 
-				if (dist[st] == INF)
-					continue;
 
-				if (dist[st] + n.second < dist[n.first])
-					dist[n.first] = dist[st] + n.second;
+	while (!que.empty())
+	{
+		int now = que.front();
+		que.pop();
+		isInQueue[now] = false;
+		visited[now]++;
+
+		// 음의 싸이클 여부 체크
+		if (visited[now] == n)
+		{
+			cout << -1;
+			return 0;
+		}
+
+		for (pii next : graph[now])
+		{
+			int to = next.first;
+			int cost = next.second;
+
+			if (dist[now] + cost < dist[to])
+			{
+				dist[to] = dist[now] + cost;
+
+				if (isInQueue[to] == false) // 큐에 없으면
+				{
+					isInQueue[to] = true;
+					que.push(to);
+				}
 			}
 		}
 	}
 
-	// 마지막
-	for (int st = 1; st < n + 1; st++)
-	{
-		for (pii n : graph[st]) // 출발st, 도착n.first, 걸리는시간n.second
-		{
-			// 방문 안한 도시
-			if (dist[st] == INF)
-				continue;
-
-			if (dist[st] + n.second < dist[n.first])
-			{
-				cout << -1;
-				return 0;
-			}
-		}
-	}
-
-	// 음의 사이클 있으면 -1 만 출력
-	// 없으면 2~n도시까지의 cost 출력. 이 때, cost값이 INF면 -1
-	for (int idx = 2; idx < n+1; idx++)
+	for (int idx = 2; idx <= n; idx++)
 	{
 		if (dist[idx] == INF)
 			cout << -1 << '\n';
 		else
 			cout << dist[idx] << '\n';
 	}
+
 	return 0;
 }
