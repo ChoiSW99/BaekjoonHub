@@ -2,12 +2,10 @@
 
 using namespace std;
 
-using ll = long long;
-
-ll POW(ll A, ll B, ll C)
+long long POW(int A, int B, int C)
 {
-	if (B == 1) return A%C;
-	ll val = POW(A, B / 2, C);
+	if (B == 1) return A % C;
+	long long val = POW(A, B / 2, C);
 	val = val * val % C;
 	if (B % 2 == 0)
 		return val;
@@ -20,7 +18,7 @@ int main()
 	ios::sync_with_stdio(0);
 	cin.tie(0);
 
-	long long A, B, C;
+	int A, B, C;
 	cin >> A >> B >> C;
 	cout << POW(A, B, C);
 }
