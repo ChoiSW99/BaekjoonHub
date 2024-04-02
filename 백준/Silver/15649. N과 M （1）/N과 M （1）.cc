@@ -1,31 +1,28 @@
 #include <bits/stdc++.h>
 
 using namespace std;
+int N, M;
+bool isUsed[9];
+int arr[9]; // arr[idx] 는 idx번째로 뽑은 수를 저장한다.
 
-void Sol(vector<int>& nums, int N, int depth, int maxDepth)
+void Sol(int depth)
 {
-	if (depth > maxDepth)
+	if (depth > M)
 	{
-		for (int n : nums)
-			cout << n << " ";
+		for (int i=1; i<= M; i++)
+			cout << arr[i] << " ";
 		cout << '\n';
 		return;
 	}
 
 	for (int i = 1; i <= N; i++)
 	{
-		bool has = false;
-		for(int n : nums)
-			if (n == i)
-			{
-				has = true;
-				break;
-			}
-		if (has == false)
+		if ( !isUsed[i] )
 		{
-			nums.push_back(i);
-			Sol(nums, N, depth + 1, maxDepth);
-			nums.pop_back();
+			arr[depth] = i;
+			isUsed[i] = true;
+			Sol(depth + 1);
+			isUsed[i] = false;
 		}
 	}
 }
@@ -35,12 +32,11 @@ int main()
 	ios::sync_with_stdio(0);
 	cin.tie(0);
 
-	int N, M; 
 	cin >> N >> M;
 
 	vector<int> nums;
 
 	int depth = 1;
 
-	Sol(nums, N, depth, M);
+	Sol(depth);
 }
