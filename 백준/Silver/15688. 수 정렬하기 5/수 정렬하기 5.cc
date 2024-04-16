@@ -1,6 +1,8 @@
-// https://www.acmicpc.net/problem/2751
-// stable sort : 앞의 배열과 뒤의 배열에서 현재 가리키는 값이 같을 때, 앞의 원소를 먼저 넣어주는 것
-// merge sort는 stable sort임. 
+/*
+https://www.acmicpc.net/problem/15688
+counting sort
+*/
+
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -18,14 +20,14 @@ int main()
 	{
 		int n;
 		cin >> n;
-		counting[1000000-n]++; // -1,000,000 이면 2,000,000에 저장 // +1,000,000 이면 0에 저장
+		counting[n+1000000]++; // -1,000,000 이면 2,000,000에 저장 // +1,000,000 이면 0에 저장
 	}
-	for (int i = 2000000; i >= 0; i--)
+	for (int i = 0; i <= 2000001; i++)
 	{
 		while (counting[i] > 0)
 		{
 			counting[i]--;
-			cout << 1000000-i << '\n';
+			cout << i-1000000 << '\n';
 		}
 	}
 }
