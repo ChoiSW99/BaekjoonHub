@@ -1,3 +1,6 @@
+// https://www.acmicpc.net/problem/2751
+// stable sort : 앞의 배열과 뒤의 배열에서 현재 가리키는 값이 같을 때, 앞의 원소를 먼저 넣어주는 것
+// merge sort는 stable sort임. 
 #include <bits/stdc++.h>
 
 using namespace std;
