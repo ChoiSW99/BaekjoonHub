@@ -1,39 +1,39 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
-#include <vector>
-#include <string>
+/*
+https://www.acmicpc.net/problem/2579
+*/
+
+#include <bits/stdc++.h>
 
 using namespace std;
 
-int DP[301][2] = {0,}; // [계단번호][연속오르기]
-int SCORE[301] = { 0, };
-// https://www.acmicpc.net/problem/2579 계단오르기
+int dp[2][305]; // [연속한칸][계단번호]
+int stair[305]; // 계단 점수
+
+// dp[0][x] = max(dp[0][x-2]+stair[x], dp[1][x-2]+stair[x]) 
+// dp[1][x] = dp[0][x-1]+stair[x]
 
 int main()
 {
-	//freopen("input.txt", "r", stdin);
+	ios::sync_with_stdio(0);
+	cin.tie(0);
 
-	ios::sync_with_stdio(false);
-	cin.tie(NULL);
-
-	int N; // 계단 개수
+	int N;
 	cin >> N;
+	for (int i = 1; i <= N; i++)
+		cin >> stair[i];
 
-	for (int i = 0; i < N; i++)
-	{
-		int score;
-		cin >> score;
-		SCORE[i+1] = score;
-	}
-	DP[1][0] = SCORE[1];
-	DP[2][0] = SCORE[2];
-	DP[2][1] = DP[1][0] + SCORE[2];
+	dp[0][1] = stair[1];
+
+	dp[0][2] = stair[2];
+	dp[1][2] = stair[1]+ stair[2];
+
 
 	for (int i = 3; i <= N; i++)
 	{
-		DP[i][0] = max(DP[i - 2][0], DP[i - 2][1]) + SCORE[i];
-		DP[i][1] = DP[i - 1][0] + SCORE[i];
+		dp[0][i] = max(dp[0][i - 2] + stair[i], dp[1][i - 2] + stair[i]);
+		dp[1][i] = dp[0][i - 1] + stair[i];
 	}
+	cout << max(dp[0][N], dp[1][N]);
 
-	cout << max(DP[N][0], DP[N][1]);
+	return 0;
 }
