@@ -6,7 +6,7 @@ https://www.acmicpc.net/problem/1931
 
 using namespace std;
 
-using pll = pair<long long, long long>;
+using pll = pair<int, int>;
 
 bool comp(pll& p1, pll& p2)
 {
