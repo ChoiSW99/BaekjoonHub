@@ -4,28 +4,27 @@
 
 using namespace std;
 
-bool SET[21];
+int state; // 32-bit
 
 void Calc(string op)
 {
 	if (op == "all")
-		for (int i = 0; i < 21; i++)
-			SET[i] = true;
+		state = 0xfffff; // 16진수이므로 하나당 4비트기에 f는 5개
 	else if (op == "empty")
-		for (int i = 0; i < 21; i++)
-			SET[i] = false;
+		state = 0;
 	else
 	{
 		int x; 
 		cin >> x;
+		x -= 1;
 		if (op == "add")
-			SET[x] = true;
+			state |= (1 << x);
 		else if (op == "remove")
-			SET[x] = false;
+			state &= (~(1 << x));
 		else if (op == "check")
-			cout << SET[x] << '\n';
+			cout << ((state >> x) & 1) << '\n';
 		else if (op == "toggle")
-			SET[x] = !SET[x];
+			state ^= (1 << x);
 	}
 	
 }
