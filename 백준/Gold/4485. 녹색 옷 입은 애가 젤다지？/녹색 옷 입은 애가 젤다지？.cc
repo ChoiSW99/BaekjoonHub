@@ -1,65 +1,61 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
 
 using namespace std;
 
-// https://www.acmicpc.net/problem/4485 녹색 옷 입은 애가 젤다지?
+int cave[126][126];
+bool visited[126][126];
+
+int dr[4] = {0, 0, -1, +1};
+int dc[4] = {-1, +1, 0, 0};
+
+using tiii = tuple<int, int, int>;
 
 int main()
 {
-	//freopen("input.txt", "r", stdin);
-
-	ios::sync_with_stdio(false);
-	cin.tie(NULL);
+	ios::sync_with_stdio(0);
+	cin.tie(0);
 	
-	int tc = 1;
-	int size;
-
-	int dr[4] = { 1, -1, 0, 0 };
-	int dc[4] = { 0, 0, -1, 1 };
-
+	int tc = 0;
 	while (true)
 	{
-		cin >> size;
+		++tc;
+		memset(cave, 0, sizeof(cave));
+		memset(visited, 0, sizeof(visited));
 
-		if (size == 0)
-			return 0;
+		int N; cin >> N;
+		if (N == 0) break;
 
-		vector<vector<int>> cave(size, vector<int>(size, 0));
-		vector<vector<int>> cost(size, vector<int>(size, 1e9));
-
-		for (int i = 0; i < size; i++)
-			for (int j = 0; j < size; j++)
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < N; j++)
 				cin >> cave[i][j];
 
-		priority_queue<pair<int,pair<int,int>>, vector<pair<int, pair<int, int>>>, greater<pair<int, pair<int, int>>>> que;
-		que.push({ cave[0][0], {0, 0} });
-		cost[0][0] = cave[0][0];
-
-		while (!que.empty())
+		priority_queue< tiii, vector<tiii>, greater<tiii>> pq;
+		pq.emplace(cave[0][0], 0, 0);
+		visited[0][0] = 1;
+		
+		while (!pq.empty())
 		{
-			auto cur = que.top();
-			que.pop();
-
-			for (int idx = 0; idx < 4; idx++)
+			auto now = pq.top(); pq.pop();
+			int weight = get<0>(now);
+			int row = get<1>(now);
+			int col = get<2>(now);
+			if (row == N - 1 && col == N - 1)
 			{
-				int nextRow = cur.second.first + dr[idx];
-				int nextCol = cur.second.second + dc[idx];
+				cout << "Problem " << tc << ": " << weight << '\n';
+				break;
+			}
+			for (int i = 0; i < 4; i++)
+			{
+				int nextR = row + dr[i];
+				int nextC = col + dc[i];
 
-				if (0 <= nextRow && nextRow < size && 0 <= nextCol && nextCol < size)
-				{
-					if (cost[cur.second.first][cur.second.second] + cave[nextRow][nextCol] < cost[nextRow][nextCol])
-					{
-						cost[nextRow][nextCol] = cost[cur.second.first][cur.second.second] + cave[nextRow][nextCol];
-						que.push({ cost[nextRow][nextCol], { nextRow, nextCol } });
-					}
-				}
+				if (nextR < 0 || nextR >= N || nextC < 0 || nextC >= N)
+					continue;
+				if (visited[nextR][nextC])
+					continue;
+				pq.emplace(weight + cave[nextR][nextC], nextR, nextC);
+				visited[nextR][nextC] = 1;
 			}
 		}
-		cout << "Problem " << tc << ": " << cost[size - 1][size - 1] << '\n';
-
-		tc++;
 	}
-
-	return 0;
 }
