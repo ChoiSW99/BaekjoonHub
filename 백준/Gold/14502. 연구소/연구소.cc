@@ -1,110 +1,108 @@
 #include <iostream>
 #include <vector>
-#include <queue>
+#include <cmath>
 #include <cstring>
+#include <queue>
 
 using namespace std;
+// 0은 빈 칸, 1은 벽, 2는 바이러스가
 
-int Lab[9][9];
-bool Visited[9][9];
 int N, M;
-int dr[4] = { 0,0,-1,+1 };
-int dc[4] = { -1,+1, 0, 0 };
+int Map[9][9];
 
-vector<pair<int, int>> safeArea; // 안전구역 위치들
-vector<pair<int, int>> virus; // 바이러스 위치들
+vector<pair<int, int>> emptyAreas;
+vector<pair<int, int>> virusAreas;
 
-int BFS()
-{
-	int virusAreaCnt = 0; // 바이러스가 퍼진 안전영역 크기 합
+int dr[4] = { 0, 0, -1, 1 };
+int dc[4] = { -1, 1, 0, 0 };
+
+bool visited[9][9];
+
+int cntSpreadVirus() {
+	int result = 0;
+
+	memset(visited, false, sizeof(visited));
+
 	queue<pair<int, int>> que;
-	for (pair<int, int> v : virus)
-	{
-		que.push({v.first, v.second});
-		Visited[v.first][v.second] = true;
+	for (pair<int, int> virus : virusAreas) {
+		que.push(make_pair(virus.first, virus.second));
+		visited[virus.first][virus.second] = true;
 	}
 
-	while (!que.empty())
-	{
-		pair<int, int> v = que.front();
+	while (!que.empty()) {
+		int r = que.front().first;
+		int c = que.front().second;
 		que.pop();
 
-		for (int i = 0; i < 4; i++)
-		{
-			int nr = v.first + dr[i];
-			int nc = v.second + dc[i];
+		for (int i = 0; i < 4; i++) {
+			int nr = r + dr[i];
+			int nc = c + dc[i];
 
-			if (nr < 0 || nc < 0 || nr >= N || nc >= M) continue;
+			if (nr < 0 || nr >= N || nc < 0 || nc >= M)
+				continue;
+			if (visited[nr][nc])
+				continue;
 
-			if (Lab[nr][nc] != 0) continue;
-
-			if (Visited[nr][nc]) continue;
-
-			virusAreaCnt++;
-			que.push({ nr,nc });
-			Visited[nr][nc] = true;
+			if (Map[nr][nc] == 0) {
+				que.push(make_pair(nr, nc));
+				visited[nr][nc] = true;
+				result++;
+			}
 		}
 	}
-	return virusAreaCnt;
+
+	return result;
 }
 
-// 0은 빈 칸, 1은 벽, 2는 바이러스
-// 바이러스가 최소로 퍼지는 경우를 구해야한다.
-// (초기 안전영역 크기) - (최소로 퍼진 경우의 바이러스 구역들 크기 합)
-// 
-// 바이러스 구역은 BFS나 DFS로 구하기 !
 int main()
 {
-	ios_base::sync_with_stdio(0);
+	ios::sync_with_stdio(0);
 	cin.tie(0);
 
+	int result = -1;
+	int cntEmptyAreas = 0;
+	
+	//freopen("input.txt", "r", stdin);
+	
 	cin >> N >> M;
+	for (int n = 0; n < N; n++) {
+		for (int m = 0; m < M; m++) {
+			int x;
+			cin >> x;
+			Map[n][m] = x;
 
-	int safetyArea = 0;
-
-	int minOccupiedArea = 100; // 안전구역 중, 바이러스가 차지한 최소 영역
-
-	for (int r = 0; r < N; r++)
-	{
-		for (int c = 0; c < M; c++)
-		{
-			int x; cin >> x;
-			Lab[r][c] = x;
-			if (x == 0)
-			{
-				safeArea.emplace_back(r, c);
-				safetyArea++;
+			if (x == 0) {
+				emptyAreas.push_back({ n, m });
+				cntEmptyAreas++;
 			}
 			else if (x == 2)
-				virus.emplace_back(r, c);
+				virusAreas.push_back({ n, m });
 		}
 	}
 
-	for (int i = 0; i < safeArea.size(); i++)
-	{
-		for (int j = 0; j < i; j++)
-		{
-			for (int k = 0; k < j; k++)
-			{
-				memset(Visited, false, sizeof(Visited));
-				pair<int, int> s1 = safeArea[i];
-				pair<int, int> s2 = safeArea[j];
-				pair<int, int> s3 = safeArea[k];
-				Lab[s1.first][s1.second] = 1;
-				Lab[s2.first][s2.second] = 1;
-				Lab[s3.first][s3.second] = 1;
+	int s = emptyAreas.size();
 
-				int areaCnt = BFS();
-				minOccupiedArea = min(minOccupiedArea, areaCnt);
+	// 3곳 선택하여 벽 세우기
+	for (int i = 0; i < s; i++) {
+		for (int j = i + 1; j < s; j++) {
+			for (int k = j + 1; k < s; k++) {
+				pair<int, int> w1 = emptyAreas[i];
+				pair<int, int> w2 = emptyAreas[j];
+				pair<int, int> w3 = emptyAreas[k];
+				Map[w1.first][w1.second] = 1;
+				Map[w2.first][w2.second] = 1;
+				Map[w3.first][w3.second] = 1;
+				
+				result = max(result, (cntEmptyAreas - 3 - cntSpreadVirus()));
 
-				Lab[s1.first][s1.second] = 0;
-				Lab[s2.first][s2.second] = 0;
-				Lab[s3.first][s3.second] = 0;
+				Map[w1.first][w1.second] = 0;
+				Map[w2.first][w2.second] = 0;
+				Map[w3.first][w3.second] = 0;
 			}
 		}
 	}
-	safetyArea -= 3; // 벽 3개
-	cout << safetyArea - minOccupiedArea;
 
+	cout << result;
+	
 	return 0;
 }
