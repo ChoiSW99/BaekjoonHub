@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -14,8 +15,8 @@ using namespace std;
 long long solution(int n, vector<int> times) {
     long long answer = 0;
     
-    long long left = 1;
-    long long right = 1e18;
+    long long left = *min_element(times.begin(), times.end());
+    long long right = 1e9 * (*max_element(times.begin(), times.end()));
     
     // 이분탐색
     while(left < right) // 60회
