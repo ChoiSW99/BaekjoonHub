@@ -71,16 +71,6 @@ int main()
             dice.top = dice.left;
             dice.left = dice.bottom;
             dice.bottom = prevRight;
-            
-            if(Map[nextR][nextC] == 0) // 0이면 주사위->바닥 복사
-            {
-                Map[nextR][nextC] = dice.bottom;
-            }
-            else // 0이 아니면, 바닥->주사위 바닥면 복사
-            {
-                dice.bottom = Map[nextR][nextC];
-                Map[nextR][nextC] = 0;
-            }
         }
         else if(dir == 2) // 서
         {
@@ -90,16 +80,6 @@ int main()
             dice.top = dice.right;
             dice.right = dice.bottom;
             dice.bottom = prevLeft;
-            
-            if(Map[nextR][nextC] == 0) // 0이면 주사위->바닥 복사
-            {
-                Map[nextR][nextC] = dice.bottom;
-            }
-            else // 0이 아니면, 바닥->주사위 바닥면 복사
-            {
-                dice.bottom = Map[nextR][nextC];
-                Map[nextR][nextC] = 0;
-            }
         }
         else if(dir == 3) // 북
         {
@@ -109,16 +89,6 @@ int main()
             dice.top = dice.down;
             dice.down = dice.bottom;
             dice.bottom = prevUp;
-            
-            if(Map[nextR][nextC] == 0) // 0이면 주사위->바닥 복사
-            {
-                Map[nextR][nextC] = dice.bottom;
-            }
-            else // 0이 아니면, 바닥->주사위 바닥면 복사
-            {
-                dice.bottom = Map[nextR][nextC];
-                Map[nextR][nextC] = 0;
-            }
         }
         else if(dir == 4) // 남
         {
@@ -128,16 +98,16 @@ int main()
             dice.top = dice.up;
             dice.up = dice.bottom;
             dice.bottom = prevDown;
-            
-            if(Map[nextR][nextC] == 0) // 0이면 주사위->바닥 복사
-            {
-                Map[nextR][nextC] = dice.bottom;
-            }
-            else // 0이 아니면, 바닥->주사위 바닥면 복사
-            {
-                dice.bottom = Map[nextR][nextC];
-                Map[nextR][nextC] = 0;
-            }
+        }
+        
+        if(Map[nextR][nextC] == 0) // 0이면 주사위->바닥 복사
+        {
+            Map[nextR][nextC] = dice.bottom;
+        }
+        else // 0이 아니면, 바닥->주사위 바닥면 복사
+        {
+            dice.bottom = Map[nextR][nextC];
+            Map[nextR][nextC] = 0;
         }
         
         cout << dice.top << "\n";
