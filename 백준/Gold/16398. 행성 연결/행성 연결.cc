@@ -1,85 +1,79 @@
 #include <iostream>
-#include <algorithm>
-#include <vector>
-#include <tuple>
+#include <queue>
 
-// 중심 행성 T
-// N개의 행성 간에 플로우 설치
-// 플로우 내에는 제국군을 주둔시키기
-// 목표) 모든 행성을 연결하면서, 플로우 유지비용 최소화 -> MST
-// 크루스칼(Union Find) 알고리즘
+// sort함수는 > 면 내림차순 & sort에 less 넣으면 오름차순
+// pq는       > 면 오름차순 & less 넣으면 내림차순
 
 using namespace std;
 
-// {cost, v1, v2}
+int N; // 행성 개수
+vector<vector<int>> Cost;
+vector<bool> Visited;
 
-vector<int> Parent(1001, -1);
+using pii = pair<int, int>;
 
-int Find(int v)
-{
-    if (Parent[v] < 0)
-        return v;
-    return Parent[v] = Find(Parent[v]);
-}
-
-bool Union(int u, int v)
-{
-    int uRoot = Find(u);
-    int vRoot = Find(v);
-
-    if (uRoot == vRoot)
-        return false;
-
-    if (Parent[uRoot] == Parent[vRoot])
-        Parent[uRoot]--;
-
-    if (Parent[uRoot] < Parent[vRoot])
-        Parent[vRoot] = uRoot;
-    else
-        Parent[uRoot] = vRoot;
-    return true;
-}
+struct Comp{
+    bool operator()(const pii p1, const pii p2)
+    {
+        return p1.first > p2.first; // 오름차순
+    }
+};
 
 int main()
 {
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-
-    long long totalCost = 0;
-    int N; cin >> N;
-    vector<tuple<int, int, int>> edges;
-
-
-    for (int r = 0; r < N; r++)
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+    
+    cin >> N;
+    Cost.assign(N, vector<int>(N, 0));
+    Visited.assign(N, false);
+    
+    for (int r=0; r<N; ++r)
+        for (int c=0; c<N; ++c)
+            cin >> Cost[r][c];
+    
+    long long res = 0;
+    
+    // 0번 행성에서 시작해서, 모든 행성을 최소 신장 트리로 잇는다.
+    // {비용합, 행성번호}
+    priority_queue<pii, vector<pii>, Comp> pq;
+    pq.push({0, 0});
+    int pickCnt = 0;
+    //Visited[0] = true;
+    
+    while(!pq.empty()) // 갈 수 있는 경로 중, 비용이 제일 낮은 길을 택하기를 반복한다!
     {
-        for (int c = 0; c < N; c++)
+        int curCostSum = pq.top().first;
+        int curPlanet = pq.top().second;
+        pq.pop();
+        
+        // 동일 행성으로 향하는 경로가 여러개일 수 있는데, 
+        // 그 중 가장 비용이 낮은 것을 택해야하므로
+        // pq에 push할 때 Visited = true 처리하지 않고
+        // pop했을 때 Visited = true 처리를 해준다!!
+        if (Visited[curPlanet]) continue;
+        
+        Visited[curPlanet] = true;
+        res += curCostSum;
+        ++pickCnt;
+        if(pickCnt == N) break; // N개만큼 다 뽑음!
+        
+        //cout << curPlanet << "\n";
+        
+        for (int adj = 0; adj<N; ++adj)
         {
-            int cost;
-            cin >> cost;
-            if (r < c)
-                edges.push_back({ cost, r, c });
+            if(adj == curPlanet) continue;
+            
+            if (Visited[adj]) continue;
+            
+            //cout << "> " << curPlanet << "->" << adj << "\n";
+            
+            pq.push({Cost[curPlanet][adj], adj});
         }
     }
-
-    // 1) 간선비용 오름차순 정렬
-    sort(edges.begin(), edges.end());
-
-    // 2) V-1개의 간선을 뽑을 때까지 반복
-    //    Union-Find로 같은 그룹인지 확인
-    int picked = 0;
-    for (int e = 0; e < edges.size(); e++)
-    {
-        int cost, u, v;
-        tie(cost, u, v) = edges[e];
-
-        if (Union(u, v))
-        {
-            totalCost += cost;
-            picked++;
-            if (picked == N - 1)
-                break;
-        }
-    }
-    cout << totalCost;
+    
+    cout << res;
     return 0;
 }
+
