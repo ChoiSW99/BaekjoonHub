@@ -4,7 +4,7 @@
 
 using namespace std;
 
-long long  Count[65][100];
+long long  Count[65][10];
 // Count[i][j] == i자리 수일 때, i번째자리가 j일 때의 개수
 // Count[i][j] = Count[i-1][0]부터 Count[i-1][j]까지의 합
 
